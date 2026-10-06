@@ -64,6 +64,7 @@ jobs:
   installer:
     needs: build
     runs-on: windows-latest
+
     steps:
       - name: Скачать Windows EXE
         uses: actions/download-artifact@v4
@@ -84,9 +85,10 @@ jobs:
           OutputBaseFilename=Setup
           Compression=lzma
           SolidCompression=yes
+          Uninstallable=yes
 
           [Files]
-          Source="dist\WorldConquest.exe"; DestDir="{app}"; Flags: ignoreversion
+          Source: "dist\WorldConquest.exe"; DestDir: "{app}"; Flags: ignoreversion
 
           [Icons]
           Name: "{group}\World Conquest"; Filename: "{app}\WorldConquest.exe"
@@ -102,4 +104,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WorldConquest-Setup
-          path: installer/Setup.exe
+          path: installer\Setup.exe
