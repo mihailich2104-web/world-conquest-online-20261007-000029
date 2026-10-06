@@ -71,7 +71,7 @@ jobs:
           name: WorldConquest-Windows
           path: dist
 
-      - name: Создать Inno Setup
+      - name: Создать Setup.exe
         shell: pwsh
         run: |
           @"
@@ -89,11 +89,11 @@ jobs:
           Source="dist\WorldConquest.exe"; DestDir="{app}"; Flags: ignoreversion
 
           [Icons]
-          Name="{group}\World Conquest"; Filename="{app}\WorldConquest.exe"
-          Name="{commondesktop}\World Conquest"; Filename="{app}\WorldConquest.exe"
+          Name: "{group}\World Conquest"; Filename: "{app}\WorldConquest.exe"
+          Name: "{commondesktop}\World Conquest"; Filename: "{app}\WorldConquest.exe"
 
           [Run]
-          Filename="{app}\WorldConquest.exe"; Description="Запустить World Conquest"; Flags: nowait postinstall skipifsilent
+          Filename: "{app}\WorldConquest.exe"; Description: "Запустить World Conquest"; Flags: nowait postinstall skipifsilent
           "@ | Out-File installer.iss -Encoding utf8
 
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer.iss
