@@ -59,3 +59,47 @@ jobs:
         with:
           name: world-data
           path: src/data/provinces.geojson
+
+
+  installer:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Скачать Windows EXE
+        uses: actions/download-artifact@v4
+        with:
+          name: WorldConquest-Windows
+          path: dist
+
+      - name: Создать Inno Setup
+        shell: pwsh
+        run: |
+          @"
+          [Setup]
+          AppName=World Conquest
+          AppVersion=1.0.0
+          DefaultDirName={autopf}\World Conquest
+          DefaultGroupName=World Conquest
+          OutputDir=installer
+          OutputBaseFilename=Setup
+          Compression=lzma
+          SolidCompression=yes
+
+          [Files]
+          Source="dist\WorldConquest.exe"; DestDir="{app}"; Flags: ignoreversion
+
+          [Icons]
+          Name="{group}\World Conquest"; Filename="{app}\WorldConquest.exe"
+          Name="{commondesktop}\World Conquest"; Filename="{app}\WorldConquest.exe"
+
+          [Run]
+          Filename="{app}\WorldConquest.exe"; Description="Запустить World Conquest"; Flags: nowait postinstall skipifsilent
+          "@ | Out-File installer.iss -Encoding utf8
+
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer.iss
+
+      - name: Загрузить Setup.exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: WorldConquest-Setup
+          path: installer/Setup.exe
